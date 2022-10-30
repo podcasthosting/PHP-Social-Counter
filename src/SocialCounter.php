@@ -12,6 +12,8 @@ namespace tatwerat\SocialCounter;
 
 class SocialCounter {
 
+    private static SocialCounter $instance;
+    private bool $formatNumber;
 
     public $options = [];
     public $cache = false;
@@ -20,20 +22,29 @@ class SocialCounter {
      * __construct
      *
      * Class constructor where we will call our filter and action hooks.
+     *
+     * @param $options
+     * @param bool $formatNumber
      */
-    public function __construct($options = []) {
+    public function __construct($options = [], bool $formatNumber = false) {
         $this->options = $options;
+        $this->formatNumber = $formatNumber;
     }
 
     /*
      * remote_get
      *
      * Get data from API's
+     *
+     * @param string $url
+     * @param $post_paramtrs
+     * @return bool|mixed|string
+     * @throws \Exception
      */
-    function remote_get($url, $post_paramtrs = false) {
+    function remote_get(string $url, $post_paramtrs = false) {
         // check if CURL is enabled
         if (!function_exists('curl_version')) {
-            return;
+            throw new \Exception('Curl extension is missing.');
         }
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -58,9 +69,7 @@ class SocialCounter {
         if ($the_request === false) {
             curl_close($ch);
         }
-        else {
-            return $the_request;
-        }
+        return $the_request;
     }
 
     /*
@@ -69,7 +78,7 @@ class SocialCounter {
      * Number format function
      */
     function format_number($number) {
-        if (!is_numeric($number)) {
+        if (!$this->formatNumber || !is_numeric($number)) {
             return $number;
         }
         if ($number >= 1000000) {
@@ -95,12 +104,10 @@ class SocialCounter {
             if ($matches and isset($matches[1]) and !empty($matches[1])) {
                 $counts = strip_tags($matches[1]);
                 $counts_number = (int)filter_var($counts, FILTER_SANITIZE_NUMBER_INT);
-                return ($counts_number && is_numeric($counts_number)) ? $this->format_number($counts_number) : "0";
-            }
-            else {
-                return "0";
+                return ($counts_number && is_numeric($counts_number)) ? $this->format_number($counts_number) : 0;
             }
         }
+        return 0;
     }
 
     /*
@@ -192,9 +199,9 @@ class SocialCounter {
      */
     function instagram_count() {
         $get_data = $this->remote_get("https://www.instagram.com/{$this->options['instagram_id']}");
-        $doc = new DOMDocument('1.0', 'UTF-8');
+        $doc = new \DOMDocument('1.0', 'UTF-8');
         @$doc->loadHTML($get_data);
-        $xpath = new DOMXPath($doc);
+        $xpath = new \DOMXPath($doc);
         $js = $xpath->query('//body/script[@type="text/javascript"]')->item(0)->nodeValue;
         $start = strpos($js, '{');
         $end = strrpos($js, ';');
