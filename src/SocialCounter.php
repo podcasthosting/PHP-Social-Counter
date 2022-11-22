@@ -238,6 +238,7 @@ class SocialCounter {
                     'soundcloud' => $this->soundcloud_count(),
                     'behance' => $this->behance_count(),
                     'instagram' => $this->instagram_count(),
+                    'pinterest' => $this->pinterest_count(),
                 ];
                 setcookie('php_social_counts', json_encode($data), time() + 24 * 3600);
                 return $data;

@@ -39,6 +39,7 @@ $SocialCounter = new SocialCounter([
     'dribbble_access_token' => 'xxxxxxxxxxxxxx',
     'soundcloud_api_key' => 'xxxxxxxxxxxxxx',
     'behance_api_key' => 'xxxxxxxxxxxxxx',
+    'pinterest_id' => '{user_name}',
 ]);
  
 $SocialCounter->cache = true; // Cache Social Counts ( improvement the loading of your server )
@@ -56,6 +57,7 @@ echo $counts_data['dribbble'];
 echo $counts_data['behance'];
 echo $counts_data['soundcloud'];
 echo $counts_data['github'];
+echo $counts_data['pinterest'];
 ```
 
 >If you want to call function one by one use this code
@@ -68,6 +70,7 @@ echo $SocialCounter->github_count();
 echo $SocialCounter->soundcloud_count();
 echo $SocialCounter->behance_count();
 echo $SocialCounter->instagram_count();
+echo $SocialCounter->pinterest_count();
 ```
 
 ## List Of Social Networks
@@ -80,3 +83,4 @@ echo $SocialCounter->instagram_count();
 - Display SoundCloud Follower Count
 - Display Behance Follower Count
 - Display Dribbble Follower Count
+- Display Pinterest Follower Count
