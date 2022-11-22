@@ -212,7 +212,7 @@ class SocialCounter {
 
     /**
      * Pinterest follower count
-     * 
+     *
      * @return mixed
      * @throws \Exception
      */
@@ -220,9 +220,10 @@ class SocialCounter {
     {
         $get_data = $this->remote_get("https://www.pinterest.com/{$this->options['pinterest_id']}");
         $doc = new \DOMDocument();
-        $doc->loadHTML($get_data);
+        @$doc->loadHTML($get_data);
+        $xpath = new \DOMXPath($doc);
 
-        return $doc->getElementsByTagName('pinterestapp:followers')->item(0)->nodeValue;
+        return $xpath->query("//meta[@name='pinterestapp:followers']/@content")->item(0)->value;
     }
 
     /*
