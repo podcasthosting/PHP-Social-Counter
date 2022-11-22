@@ -210,12 +210,19 @@ class SocialCounter {
         return ($json_data and isset($json_data['entry_data']) and isset($json_data['entry_data']['ProfilePage']) and isset($json_data['entry_data']['ProfilePage'][0]) and isset($json_data['entry_data']['ProfilePage'][0]['graphql']) and isset($json_data['entry_data']['ProfilePage'][0]['graphql']['user']) and isset($json_data['entry_data']['ProfilePage'][0]['graphql']['user']['edge_followed_by'])) ? $this->format_number($json_data["entry_data"]["ProfilePage"][0]["graphql"]["user"]["edge_followed_by"]["count"]) : "0";
     }
 
+    /**
+     * Pinterest follower count
+     * 
+     * @return mixed
+     * @throws \Exception
+     */
     public function pinterest_count()
     {
         $get_data = $this->remote_get("https://www.pinterest.com/{$this->options['pinterest_id']}");
-        $tags = get_meta_tags($get_data);
+        $doc = new \DOMDocument();
+        $doc->loadHTML($get_data);
 
-        return $tags['pinterestapp:followers'];
+        return $doc->getElementsByTagName('pinterestapp:followers')->item(0)->nodeValue;
     }
 
     /*
